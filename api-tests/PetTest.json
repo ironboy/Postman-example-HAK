@@ -62,7 +62,7 @@
           "listen": "prerequest",
           "script": {
             "exec": [
-              "// Read dummy data fort pets have previously created",
+              "// Read dummy data for pets have previously created",
               "// in the pre-request script for the whole collection",
               "const pets = pm.variables.get('pets');",
               "",
@@ -115,8 +115,7 @@
               "// Loop this request if we haven't gone through all dummy data",
               "const loop = eval(pm.variables.get('loop'));",
               "loop('pets');",
-              "",
-              "console.log('pets from variables', pm.variables.get('pets'));"
+              ""
             ],
             "type": "text/javascript",
             "packages": {},
@@ -146,6 +145,92 @@
           "path": [
             "api",
             "pets"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Read Pets",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Read dummy data for pets have previously created",
+              "// in the pre-request script for the whole collection",
+              "const pets = pm.variables.get('pets');",
+              "",
+              "// Get current counter value (used to decide which dummy data item to use)",
+              "const getCounter = eval(pm.variables.get('getCounter'));",
+              "const counter = getCounter();",
+              "",
+              "// Set petId (used in the route url)",
+              "pm.variables.set('petId', pets[counter].id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Read pets and counter from pm.variables",
+              "const pets = pm.variables.get('pets');",
+              "const counter = pm.variables.get('counter');",
+              "",
+              "// pm.response is the response object",
+              "// and the method json deserializes the response",
+              "// from a json string to a javascript data structure",
+              "const petFromDb = pm.response.json();",
+              "",
+              "// pm.test - create a test with a human-readable label",
+              "// + a function that runs the actual test",
+              "",
+              "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+              "",
+              "// check that was is stored in the db equals the dummy data",
+              "// but add userId: null to dummy data before check because",
+              "// this exists in the db, make a deep equal comparison",
+              "",
+              "pm.test('Db data equals earlier written dummy data', () => ",
+              "    pm.expect(petFromDb).to.deep.equal({...pets[counter], userId: null})",
+              ");",
+              "",
+              "// Loop this request if we haven't gone through all dummy data",
+              "const loop = eval(pm.variables.get('loop'));",
+              "loop('pets');",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http://localhost:5001/api/pets/{{petId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5001",
+          "path": [
+            "api",
+            "pets",
+            "{{petId}}"
           ]
         }
       },
