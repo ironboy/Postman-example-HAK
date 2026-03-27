@@ -1,0 +1,59 @@
+{
+  "info": {
+    "_postman_id": "739ff51f-8185-46ee-b23d-cc207acf526d",
+    "name": "PetTest",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "30881265"
+  },
+  "item": [
+    {
+      "name": "Get All Pats",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// pm.response is the response object",
+              "// and the method json deserializes the response",
+              "// from a json string to a javascript data structure",
+              "const pets = pm.response.json();",
+              "",
+              "// pm.test - create a test with a human-readable label",
+              "// + a function that runs the actual test",
+              "",
+              "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+              "",
+              "pm.test('Response is an array', () => pm.expect(pets).to.be.an('array'));",
+              "",
+              "pm.test('The cat Moshi must exist in the DB', () => {",
+              "    let found = pets.find(pet => pet.name === 'Moshi' && pet.species === 'cat' );",
+              "    pm.expect(found).to.exist;",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5001/api/pets",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5001",
+          "path": [
+            "api",
+            "pets"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
