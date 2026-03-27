@@ -1,13 +1,13 @@
 {
   "info": {
-    "_postman_id": "739ff51f-8185-46ee-b23d-cc207acf526d",
+    "_postman_id": "bb65bbc5-34a0-48ef-b70c-981453c40e40",
     "name": "PetTest",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "30881265"
   },
   "item": [
     {
-      "name": "Get All Pats",
+      "name": "Get All Pets",
       "event": [
         {
           "listen": "test",
@@ -54,6 +54,135 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Create Pets",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Read dummy data fort pets have previously created",
+              "// in the pre-request script for the whole collection",
+              "const pets = pm.variables.get('pets');",
+              "",
+              "// Set a counter for which pet we are about to create",
+              "// if the counter doesn't exist already",
+              "pm.variables.get('counter') === undefined && pm.variables.set('counter', 0);",
+              "",
+              "// Read the counter to a local variable ",
+              "const counter = pm.variables.get('counter');",
+              "",
+              "// Set petName and petSpecies as collectionVariables",
+              "// so that the request body inclusions with {{petName}} etc will work",
+              "pm.variables.set('petName', pets[counter].name);",
+              "pm.variables.set('petSpecies', pets[counter].species);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Test",
+              "",
+              "",
+              "// Check if we should loop (if there are more pets to add)",
+              "const pets = pm.variables.get('pets');",
+              "const counter = pm.variables.get('counter');",
+              "",
+              "// Loop by increeing the counter and repeating",
+              "// this request if there are more pets to create",
+              "if(counter < pets.length - 1){",
+              "    pm.variables.set('counter', counter + 1);",
+              "    pm.execution.setNextRequest('Create Pets');",
+              "}",
+              "else {",
+              "    // Reset remove counter so that we later can use similar",
+              "    // logic with a conuter variable in other requests",
+              "    pm.variables.delete('counter');",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"{{petName}}\",\n    \"species\": \"{{petSpecies}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5001/api/pets",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5001",
+          "path": [
+            "api",
+            "pets"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "pm.variables.set('pets',[",
+          "  {",
+          "    \"name\": \"Whiskers\",",
+          "    \"species\": \"cat\"",
+          "  },",
+          "  {",
+          "    \"name\": \"Bubbles\",",
+          "    \"species\": \"goldfish\"",
+          "  },",
+          "  {",
+          "    \"name\": \"Thumper\",",
+          "    \"species\": \"rabbit\"",
+          "  },",
+          "  {",
+          "    \"name\": \"Polly\",",
+          "    \"species\": \"parrot\"",
+          "  },",
+          "  {",
+          "    \"name\": \"Spike\",",
+          "    \"species\": \"hedgehog\"",
+          "  }",
+          "]);"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
     }
   ]
 }
