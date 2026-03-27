@@ -6,7 +6,7 @@
   "main": "backend/index.js",
   "scripts": {
     "backend": "node backend/index.js",
-    "test": "newman run ./api-tests/*.json"
+    "test": "newman run ./api-tests/PetTest.json"
   },
   "author": "ironboy",
   "license": "MIT",
